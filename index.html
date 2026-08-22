@@ -338,22 +338,20 @@
             justify-content: space-between;
             background: linear-gradient(135deg, var(--md-sys-color-primary-container) 0%, #163663 100%);
             color: var(--md-sys-color-on-primary-container);
-            padding: 18px 24px;
+            padding: 12px 18px;
             border-radius: var(--md-shape-large);
             border: 1px solid rgba(148, 186, 255, 0.35);
             gap: 16px;
             flex-wrap: nowrap;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
         }
 
         .banner-summary {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-weight: 800;
-            font-size: 1.05rem;
-            white-space: nowrap;
-            flex-shrink: 1;
+            flex: 1;
             min-width: 0;
         }
 
@@ -363,16 +361,52 @@
             flex-shrink: 0;
         }
 
+        #cw-yell-output {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--md-shape-medium);
+            color: #00f0ff;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 8px 12px;
+            width: 100%;
+            outline: none;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
         .total-badge {
             background-color: var(--md-sys-color-primary);
             color: var(--md-sys-color-on-primary);
-            padding: 8px 22px;
+            padding: 8px 20px;
             border-radius: var(--md-shape-full);
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 0.9rem;
             white-space: nowrap;
             flex-shrink: 0;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .total-badge:hover {
+            background-color: #ffffff;
+            color: var(--md-sys-color-on-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+        }
+
+        .total-badge:active {
+            transform: translateY(0);
+        }
+
+        .total-badge .material-symbols-outlined {
+            font-size: 1.1rem;
         }
 
         .footer {
@@ -614,11 +648,13 @@
                 </div>
 
                 <div class="total-mobs-banner">
-                    <div class="banner-summary">
-                        <span class="material-symbols-outlined">timer</span>
-                        <span id="cw-summary-text">Target Time: 0 hours 0 minutes</span>
+                    <div class="banner-summary" style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
+                        <span class="material-symbols-outlined" style="color: #00e5ff;">chat</span>
+                        <input type="text" id="cw-yell-output" readonly value="/y 0 Large, 0 Medium, 0 Small, 0 Tiny" style="background: transparent; border: none; color: #00f0ff; font-family: 'Roboto Mono', monospace; font-size: 0.95rem; font-weight: 700; width: 100%; outline: none;">
                     </div>
-                    <span id="cw-total-mobs-badge" class="total-badge">0 Mobs Total</span>
+                    <button class="total-badge" onclick="copyToClipboard('cw-yell-output', this)" style="border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                        <span class="material-symbols-outlined" style="font-size: 1.1rem;">content_copy</span> Copy Yell
+                    </button>
                 </div>
             </div>
         </div>
@@ -780,10 +816,16 @@
         document.getElementById('cw-small-count').innerText = small;
         document.getElementById('cw-tiny-count').innerText = tiny;
 
-        const hoursStr = cwHours === 1 ? '1 hour' : `${cwHours} hours`;
-        const minsStr = cwMinutes === 1 ? '1 minute' : `${cwMinutes} minutes`;
-        document.getElementById('cw-summary-text').innerText = `Target Time: ${hoursStr} ${minsStr} (${totalMinutes} mins)`;
-        document.getElementById('cw-total-mobs-badge').innerText = `${totalMobs} Mob${totalMobs === 1 ? '' : 's'} Total`;
+        document.getElementById('cw-yell-output').value = `/y ${large} Large, ${medium} Medium, ${small} Small, ${tiny} Tiny`;
+    }
+
+    function copyToClipboard(id, btn) {
+        const input = document.getElementById(id);
+        input.select();
+        document.execCommand('copy');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = `<span class="material-symbols-outlined">check</span> Copied!`;
+        setTimeout(() => btn.innerHTML = originalHTML, 2000);
     }
 
     window.onload = () => {
